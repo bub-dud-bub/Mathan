@@ -1,0 +1,83 @@
+# -*- coding: cp1251 -*-
+from ast import List
+import math
+import matplotlib.pyplot as plt
+from ctypes import sizeof
+from ctypes.wintypes import SIZE
+from numpy import number
+import math
+import wx
+import fileinput
+class Window(wx.Frame):
+    def __init__(self, parent, title):
+        wx.Frame.__init__(self, parent, title = title, size = (500,500))
+        self.BackgroundColour = "white"
+        self.Size
+        self.Show(True)
+
+        self.lbl = wx.StaticText(self, wx.ID_ANY, "Подставьте значения в таблицу:", pos = (30,30))
+        self.lbl = wx.StaticText(self, wx.ID_ANY, "ИЛИ", pos = (270,30))
+        self.lbl = wx.StaticText(self, wx.ID_ANY, "Укажите путь к файлу:", pos = (350,30))
+        self.path = wx.TextCtrl(self, wx.ID_ANY, "file.txt", pos = (350,55))
+        X = wx.StaticText(self, wx.ID_ANY,"X:", pos = (40, 55))
+        X.SetSize((30,20))
+        
+        Y = wx.StaticText(self, wx.ID_ANY,"Y:", pos = (40, 75))
+        Y.SetSize((30,20))
+            
+        i = 0        
+        x = 70
+        I = 0
+        self.numbers = []
+        self.listX = []
+        for i in range(5):
+            self.numbers.append(wx.TextCtrl(self, wx.ID_ANY, str(I), pos = (x, 55)))           
+            self.numbers[i].SetSize((30,20))
+            I += 5
+            x+=30       
+        self.listY = []
+        
+        b = wx.Button(self, wx.ID_ANY, "Построить график", pos = (100, 100))
+        b.Bind( wx.EVT_BUTTON, self.Graph)
+        b2 = wx.Button(self, wx.ID_ANY, "Открыть", pos = (350, 100))
+        b2.Bind( wx.EVT_BUTTON, self.Graph2)
+        # X1 = int(X1.Value)
+        # 
+        
+        # x = [X1, X2]
+        # y = [1, 2]
+    def Graph(self, event):
+        self.listX.clear()
+        self.listY.clear() 
+        x = 70
+        for i in range(len(self.numbers)):
+            X = float(self.numbers[i].Value)
+            self.listX.append(X)
+            X = pow(X,-X) + X*X - 3
+            self.listY.append(X)               
+            i = wx.TextCtrl(self, wx.ID_ANY, str(X), pos = (x, 75))
+            i.SetSize((30,20))
+            x+=30
+        plt.plot(self.listX, self.listY, color='green', marker='o', markersize='4')
+        plt.show()
+
+    def Graph2 (self, event):
+         self.listX.clear()
+         self.listY.clear()   
+         x = 70 
+         with open (self.path.Value, 'r') as f:
+             for line in f:
+                X = float(line)
+                self.listX.append(X)
+                X = pow(X,-X) + X*X - 3
+                self.listY.append(X)               
+                i = wx.TextCtrl(self, wx.ID_ANY, str(X), pos = (x, 75))
+                i.SetSize((30,20))
+             plt.plot(self.listX, self.listY, color='green', marker='o', markersize='4')
+             plt.show()
+             f.close()
+
+          
+app = wx.App()
+wnd =Window(None, "График")
+app.MainLoop()
